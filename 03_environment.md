@@ -190,12 +190,79 @@ after restart
 ## Variables
 ### Types of variables
 #### Global variables
+Global variables or environment variables are available in all shells. The `env` or `printenv` commands can be used to display.
+``` console
+[oracle@localhost 2022Shell]$ env
+XDG_VTNR=1
+XDG_SESSION_ID=1
+SSH_AGENT_PID=7644
+HOSTNAME=localhost.localdomain
+IMSETTINGS_INTEGRATE_DESKTOP=yes
+SHELL=/bin/bash
+XDG_MENU_PREFIX=gnome-
+TERM=xterm-256color
+VTE_VERSION=5202
+HISTSIZE=1000
+ORACLE_UNQNAME=orclcdb
+TMPDIR=/tmp
+...
+```
 #### Local variables
+Local variables are only available in the current shell. 
+
 #### Variables by content
+- String variables
+- Integer variables
+- Constant variables
+- Array variables
 
 ### Creating variables
-
+**VARNAME="value"**
+``` console
+[oracle@localhost ]$ MYVAR1="2"
+[oracle@localhost 2022Shell]$ echo $MYVAR1
+2
+[oracle@localhost ]$ first_name="Franky"
+[oracle@localhost ]$ echo $first_name
+Franky
+[oracle@localhost ]$ full_name = "Franky M."
+bash: full_name: command not found...
+[oracle@localhost ]$ full_name="Franky M."
+[oracle@localhost ]$ echo $full_name
+Franky M.
+[oracle@localhost ]$ unset MYVAR1 first_name full_name
+[oracle@localhost ]$ echo $MYVAR1 $first_name $full_name
+```
 ### Exporting variables
+A subshell can change variables it inherited from the parent, but the changes made by the child don't affect the parent.
+``` console
+[oracle@localhost ]$ full_name="Franky M."
+[oracle@localhost ]$ bash
+[oracle@localhost ]$ echo $full_name
+
+[oracle@localhost ]$ exit
+exit
+[oracle@localhost ]$ export full_name
+[oracle@localhost ]$ bash
+[oracle@localhost ]$ echo $full_name
+Franky M.
+[oracle@localhost ]$ export full_name="Charles the Great"
+[oracle@localhost ]$ echo $full_name
+Charles the Great
+[oracle@localhost ]$ exit
+exit
+[oracle@localhost ]$ echo $full_name
+Franky M.
+[oracle@localhost ]$ 
+```
+When first trying to read the value of `full_name`, it is not there (**echo** shows a null string). 
+
+The subshell quits, and `full_name` is exported in the parent - a variable can be exported after it has been assigned a value.
+
+Then a new subshell is started, in which the variable exported from the parent is visible.
+
+The variable is changed to hold another name, but the value for this variable in the parent stays the same.
+
 
 ### Reserved variables
 
