@@ -111,3 +111,37 @@ You can use the same octal scheme to set execute permission, or just use the "+x
    chmod +x mypgm
 ```
 ## shell variables
+
+``` console
+[oracle@localhost 2022Shell]$ shvar="This is a test."
+[oracle@localhost 2022Shell]$ echo $shvar
+This is a test.
+[oracle@localhost 2022Shell]$ allfiles=*
+[oracle@localhost 2022Shell]$ echo $allfiles
+mysystem.sh scripts unsortText.txt
+[oracle@localhost 2022Shell]$ 
+```
+If you want to call other shell programs from a shell program and have them use the same shell variables as the calling program, 
+you have to "export" them as follows:
+```sh
+   shvar="This is a test!"
+   export shvar
+   echo "Calling program two."
+   shpgm2
+   echo "Done!"
+```   
+If "shpgm2" simply contains:
+```
+   echo $shvar
+```
+-- then it will echo "This is a test!".
+
+results ??
+``` console
+[oracle@localhost 2022Shell]$ sh var.sh
+Calling program two.
+var.sh: line 5: shpgm2: command not found
+Done!
+[oracle@localhost 2022Shell]$ 
+
+```
