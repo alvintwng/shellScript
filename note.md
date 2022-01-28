@@ -190,7 +190,7 @@ $shcmd
 from wikibooks
 ``` sh
 location=world               # store "world" in the variable "location"
-echo "Hello, ${location}!"   # print "Hello, world!" ????? error
+echo "Hello, ${location}\!"   # print "Hello, world!", noted back-quote for `!`
 ```
 ``` sh
 cmd_to_run=echo                   # store "echo" in the variable "cmd_to_run"
