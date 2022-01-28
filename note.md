@@ -123,6 +123,8 @@ mysystem.sh scripts unsortText.txt
 ```
 If you want to call other shell programs from a shell program and have them use the same shell variables as the calling program, 
 you have to "export" them as follows:
+
+#### shpgm
 ```sh
    shvar="This is a test!"
    export shvar
@@ -131,17 +133,21 @@ you have to "export" them as follows:
    echo "Done!"
 ```   
 If "shpgm2" simply contains:
-```
+#### shpgm2
+```sh
    echo $shvar
 ```
 -- then it will echo "This is a test!".
 
-results ??
 ``` console
-[oracle@localhost 2022Shell]$ sh var.sh
+[oracle@localhost scripts]$ shpgm
+bash: /home/oracle/2022Shell/scripts/shpgm: Permission denied
+[oracle@localhost scripts]$ chmod +x shpgm
+[oracle@localhost scripts]$ chmod +x shpgm2
+[oracle@localhost scripts]$ ls
+commented-scripts.sh  script1  script1.sh  shpgm2  shpgm
+[oracle@localhost scripts]$ shpgm
 Calling program two.
-var.sh: line 5: shpgm2: command not found
+This is a test!
 Done!
-[oracle@localhost 2022Shell]$ 
-
 ```
