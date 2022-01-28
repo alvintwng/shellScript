@@ -12,7 +12,7 @@ clear
 ls -al
 ```
 
-http://www.faqs.org/docs/air/tsshell.html
+
 
 A list of fundamental UN*X system commands follows:
 ```
@@ -151,3 +151,69 @@ Calling program two.
 This is a test!
 Done!
 ```
+
+## Command Substitution
+
+`fgrep` - which searches a file for a string
+``` console
+[oracle@localhost scripts]$ fgrep UN*X source.txt
+```
+enclose the string in single quotes, `'`
+``` console
+[oracle@localhost scripts]$ echo "$shvar"
+
+[oracle@localhost scripts]$ echo '$shvar'
+$shvar
+```
+back-quote, `\`
+``` console
+antw@Mac-mini scripts % expr 2 + 4
+6
+antw@Mac-mini scripts % expr 3 * 7
+expr: syntax error
+antw@Mac-mini scripts % expr 3 \* 7
+21
+```
+don't work for `expr` ?
+``` console
+antw@Mac-mini scripts % expr 12 / 3
+4
+antw@Mac-mini scripts % shcmd="expr 12 / 3"
+antw@Mac-mini scripts % echo $shcmd
+expr 12 / 3
+antw@Mac-mini scripts % echo "$shcmd"
+expr 12 / 3
+antw@Mac-mini scripts % echo '$shcmd' 
+$shcmd
+```
+
+from wikibooks
+``` sh
+location=world               # store "world" in the variable "location"
+echo "Hello, ${location}!"   # print "Hello, world!" ????? error
+```
+``` sh
+cmd_to_run=echo                   # store "echo" in the variable "cmd_to_run"
+"${cmd_to_run}" 'Hello, world!'   # print "Hello, world!"
+```
+``` sh
+foo='a  b*'    # store "a  b*" in the variable "foo"
+echo $foo
+```
+
+
+##  COMMAND-LINE ARGUMENTS
+* In general, shell programs operate in a "batch" mode, that is, without interaction from the user, and so most of their parameters are obtained on the command line.
+
+Each argument on the command line can be seen inside the shell program as a shell variable of the form "$1", "$2", "$3", and so on, with "$1" corresponding to the first argument, "$2" the second, "$3" the third, and so on.
+
+There is also a "special" argument variable, "$0", that gives the name of the shell program itself. Other special variables include "$#", which gives the number of arguments supplied, and "$*", which gives a string with all the arguments supplied.
+
+Since the argument variables are in the range "$1" to "$9", so what happens if you have more than 9 arguments? No problem, you can use the "shift" command to move the arguments down through the argument list. That is, when you execute "shift" then the second argument becomes "$1", the third argument becomes "$2", and so on, and if you do a "shift" again the third argument becomes "$1"; and so on. You can also add a count to cause a multiple shift:
+
+   shift 3
+-- shifts the arguments three times, so that the fourth argument ends up in "$1".
+
+---
+An Introduction To Shell Programming - http://www.faqs.org/docs/air/tsshell.html
+
