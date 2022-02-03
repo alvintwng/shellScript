@@ -185,6 +185,8 @@ line to put in file
 ```
 and all of the arguments, except the filename, will be written to the file.
 
+Note that positional parameters beyond `$9` require the curly braces; should you need to refer to the tenth argument, for example, you must write `${10}`.
+
 ---
 
 https://en.wikibooks.org/wiki/Bash_Shell_Scripting
