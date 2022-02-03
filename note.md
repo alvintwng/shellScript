@@ -225,38 +225,9 @@ Since the argument variables are in the range "$1" to "$9", so what happens if y
    shift 3
 -- shifts the arguments three times, so that the fourth argument ends up in "$1".
 
-## Some introductory examples
-
-#### testConfig.sh
-``` sh
-if [[ -e config.txt ]] ; then
-  echo 'The file "config.txt" already exists. Comparing with default . . .'
-  diff -u config-default.txt config.txt > config-diff.txt
-  echo 'A diff has been written to "config-diff.txt".'
-else
-  echo 'The file "config.txt" does not exist. Copying default . . .'
-  cp config-default.txt config.txt
-  echo '. . . done.'
-fi
-```
-``` console
-[oracle@localhost 2022Shell]$ ls config*.txt
-config-default.txt  
-[oracle@localhost 2022Shell]$ sh testConfig.sh
-The file "config.txt" does not exist. Copying default . . .
-. . . done.
-[oracle@localhost 2022Shell]$ ls config*.txt
-config-default.txt  config.txt 
-[oracle@localhost 2022Shell]$ sh testConfig.sh
-The file "config.txt" already exists. Comparing with default . . .
-A diff has been written to "config-diff.txt".
-[oracle@localhost 2022Shell]$ ls config*.txt
-config-default.txt  config-diff.txt  config.txt
-```
 
 
 ---
 An Introduction To Shell Programming - http://www.faqs.org/docs/air/tsshell.html
 
-https://en.wikibooks.org/wiki/Bash_Shell_Scripting
 
