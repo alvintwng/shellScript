@@ -139,6 +139,7 @@ cat input.txt | grep foo | grep -v bar
 the pipeline prints any lines of `input.txt` that _do_ contain foo and _do not_ contain bar.
 
 ### Variables
+${*variable_name*}
 ```sh
 location=world               # store "world" in the variable "location"
 echo "Hello, ${location}!"   # print "Hello, world!"
@@ -147,6 +148,42 @@ echo "Hello, ${location}!"   # print "Hello, world!"
 cmd_to_run=echo                   # store "echo" in the variable "cmd_to_run"
 "${cmd_to_run}" 'Hello, world!'   # print "Hello, world!"
 ```
+It is generally a good idea to wrap variable expansions in double-quotes; for example, use `"$var"` rather than `$var`.
+
+**positional parameters**  are identified by numbers rather than by names
+
+suppose we want to create a simple script called `mkfile.sh` that takes two arguments — a filename, and a line of text — and creates the specified file with the specified text.
+
+mkfile.sh
+```sh
+#!/bin/bash
+echo "$2" > "$1"
+```
+``` console
+[oracle@localhost scripts]$ vim mkfile.sh
+[oracle@localhost scripts]$ chmod +x mkfile.sh
+[oracle@localhost scripts]$ ./mkfile.sh file-to-create.txt 'line to put in file'
+[oracle@localhost scripts]$ cat file-to-create.txt
+line to put in file
+```
+
+We can also refer to all of the arguments at once by using `$@`, which expands to *all* of the positional parameters, in order. When wrapped in double-quotes, as `"$@"`, each argument becomes a separate word. (Note: the alternative $* is perhaps more common.)
+This is often useful in concert with the built-in command shift, which removes the first positional parameter, such that `$2` becomes `$1`, `$3` becomes `$2`, and so on. 
+
+
+mkfile.sh
+``` sh
+#!/bin/bash
+file="$1" 		# save the first argument as "$file"
+shift 			# drop the first argument from "$@"
+echo "$@" > "$file" 	# write the remaining arguments to "$file"
+```
+``` console
+[oracle@localhost scripts]$ ./mkfile.sh file-to-create.txt line to put in file
+[oracle@localhost scripts]$ cat file-to-create.txt
+line to put in file
+```
+and all of the arguments, except the filename, will be written to the file.
 
 ---
 
