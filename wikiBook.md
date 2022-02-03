@@ -69,30 +69,83 @@ config-default.txt  config-diff.txt  config.txt
 * `cd ../../` -  up 2 directories
 * `cd -` or just `cd` - to default home directory
 
-#### Quoting
+#### Quoting `' '`; `" "`
 ```sh
 rm 'this file.txt'
 ```
 ``` sh
 rm "this file.txt"
 ```
-Caution:
+``` sh
+rm this\ file.txt
+```
+``` diff
+- Caution:
 In Unix, GNU/Linux distributions and other Unix-like systems, 
 file names can contain spaces, tabs, newlines, and even control characters.
-```diff
-- text in red
-+ text in green
-! text in orange
-# text in gray
-@@ text in purple (and bold)@@
 ```
 
-#### Tilde expansion
+#### Blackslash
+``` console
+[oracle@localhost scripts]$ touch \*.txt
+[oracle@localhost scripts]$ vim \*.txt
+[oracle@localhost scripts]$ ls *.txt
+source.txt  ^test.txt  *.txt
+```
+#### Tilde expansion `~`
+
 has as a lot of features, but the main one is this: in a word that consists solely of a tilde `~`, 
 or in a word that begins with `~/` (tilde-slash), the tilde is replaced with the full path 
 to the current user's home directory. For example, this command:
 ``` sh
 echo ~/*.txt
+```
+
+#### Brace expansion `{ }`
+```sh
+ls file1.txt file2.txt file3.txt file4.txt file5.txt
+```
+```sh
+ls file{1,2,3,4,5}.txt
+```
+```sh
+ls file{1..5..1}.txt
+```
+```sh
+ls file{1..5}.txt
+```
+#### Redirecting output `>`; `>>`
+
+`>` - overwrite the destination file
+
+`>>` - append the command's output 
+
+If we wish for standard error to be combined with standard output,
+```sh
+cat input.txt &>> output.txt
+```
+```sh
+cat input.txt >> output.txt 2>&1
+```
+ standard error to be appended to a different file from standard output
+```sh
+cat input.txt >> output.txt 2>> error.txt
+```
+#### A preview of pipelines
+A pipeline is a series of commands separated by the pipe character `|`. 
+``` sh
+cat input.txt | grep foo | grep -v bar
+```
+the pipeline prints any lines of `input.txt` that _do_ contain foo and _do not_ contain bar.
+
+### Variables
+```sh
+location=world               # store "world" in the variable "location"
+echo "Hello, ${location}!"   # print "Hello, world!"
+```
+```sh
+cmd_to_run=echo                   # store "echo" in the variable "cmd_to_run"
+"${cmd_to_run}" 'Hello, world!'   # print "Hello, world!"
 ```
 
 ---
