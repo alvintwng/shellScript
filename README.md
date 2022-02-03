@@ -2,7 +2,7 @@
 Shell Scripting notes
 
 
-*   [01_Bash.md](shellScript/01_Bash.md)
+*   [01_Bash.md](01_Bash.md)
     ```sh
     bash --version
     ```
@@ -23,7 +23,7 @@ Shell Scripting notes
     
       `alias`,`bind`,`builtin`,`command`,`declare`,`echo`,`enable`,`help`,`let`, `local`, `logout`, `printf`,`read`, `shopt`,`type`,`typeset`,`ulimit` and `unalias`.
 
-*   [02_Debuging.md](shellScript/02_Debuging.md)
+*   [02_Debuging.md](02_Debuging.md)
     #### `bash -x script1.sh`
     Debugging on the entire script
     #### `set -x`
@@ -35,7 +35,7 @@ Shell Scripting notes
     ```
 
 
-*   [my note](shellScript/note.md)
+*   [note.md](note.md)
 
     A list of fundamental UN*X system commands follows:
     ```
