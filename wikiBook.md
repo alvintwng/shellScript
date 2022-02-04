@@ -221,7 +221,7 @@ The exit status of a command is (briefly) available as `$?`.
 
 For example, the `grep` command (which searches for lines in a file that match a specified pattern) returns `0` if it finds a match, `1` if it finds no matches, and `2` if a genuine error occurs.
 
-### Conditional expressions and if statements
+### Conditional expressions and `if` statements
 ``` sh
 #!/bin/bash
 
@@ -286,6 +286,92 @@ returns $exit && echo "true, $?" || echo "false, $?"
 # Of course you can use the returns $exit instead of false.
 # (returns $exit ||(echo "false, $?"; false)) && echo "true, $?"
 ```
+`returns() { return $*; } ` :point_left: :confused:
+
+#### Conditional expressions
+Most commonly used conditions supported by Bash's [[ … ]] notation
+
+* `-e file`
+      True if *file* exists
+* `-d file`
+      True if *file* exists and is a directory.
+* `-f file`
+      True if *file* exists and is a regular file.
+* `string1 == string2`
+      True if *string1* and *string2* are equal.
+* `string ~= pattern`
+      True if *string* matches *pattern*. :point_left: :confused:
+* `string != pattern`
+      True if *string* does not match *pattern*. :point_left: :confused:
+
+In the last three types of tests, the value on the left is usually a variable expansion; for example, `[[ "$var" = 'value' ]]` returns a successful exit status if the variable named `var` contains the value `value`.
+
+
+The following script is equivalent to the above `if` statements, but it only prints output if the first argument is `--verbose`:
+
+verbose.sh
+``` sh
+#!/bin/bash
+
+if [[ "$1" == --verbose ]] ; then
+  verbose_mode=TRUE
+  shift # remove the option from $@
+else
+  verbose_mode=FALSE
+fi
+
+if [[ -e source1.txt ]] ; then
+  if [[ "$verbose_mode" == TRUE ]] ; then
+    echo 'source1.txt exists; copying to destination.txt.'
+  fi
+  cp source1.txt destination.txt
+elif [[ -e source2.txt ]] ; then
+  if [[ "$verbose_mode" == TRUE ]] ; then
+    echo 'source1.txt does not exist, but source2.txt does.'
+    echo 'Copying source2.txt to destination.txt.'
+  fi
+  cp source2.txt destination.txt
+else
+  if [[ "$verbose_mode" == TRUE ]] ; then
+    echo 'Neither source1.txt nor source2.txt exists; exiting.'
+  fi
+  exit 1 # terminate the script with a nonzero exit status (failure)
+fi
+```
+"verbose": it generates a lot of output.
+
+``` console
+sh-4.2$ ./verbose.sh
+sh-4.2$ echo $?
+1
+sh-4.2$ ./verbose.sh --verbose
+Neither source1.txt nor source2.txt exists; exiting.
+sh-4.2$ echo $?
+1
+```
+#### Combining conditions
+``` sh
+#!/bin/bash
+
+if [[ -e source.txt ]] && ! [[ -e destination.txt ]] ; then
+  # source.txt exists, destination.txt does not exist; perform the copy:
+  cp source.txt destination.txt
+fi
+```
+can also write the above this way:
+``` sh
+#!/bin/bash
+
+if [[ -e source.txt && ! -e destination.txt ]] ; then
+  # source.txt exists, destination.txt does not exist; perform the copy:
+  cp source.txt destination.txt
+fi
+```
+#### Notes on readability
+- The commands within an `if` statement are indented ... 
+- The semicolon character `;` is used before `then`. ...
+- A newline is used after `then` and after `else`. ...
+- Regular commands are separated by newlines, never semicolons. This is a general convention, ...
 
 ---
 
