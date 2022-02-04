@@ -150,7 +150,7 @@ cmd_to_run=echo                   # store "echo" in the variable "cmd_to_run"
 ```
 It is generally a good idea to wrap variable expansions in double-quotes; for example, use `"$var"` rather than `$var`.
 
-**positional parameters**  are identified by numbers rather than by names
+### positional parameters  are identified by numbers rather than by names
 
 suppose we want to create a simple script called `mkfile.sh` that takes two arguments — a filename, and a line of text — and creates the specified file with the specified text.
 
@@ -160,16 +160,15 @@ mkfile.sh
 echo "$2" > "$1"
 ```
 ``` console
-[oracle@localhost scripts]$ vim mkfile.sh
-[oracle@localhost scripts]$ chmod +x mkfile.sh
-[oracle@localhost scripts]$ ./mkfile.sh file-to-create.txt 'line to put in file'
-[oracle@localhost scripts]$ cat file-to-create.txt
+bash-3.2$ vim mkfile.sh
+bash-3.2$ chmod +x mkfile.sh
+bash-3.2$ ./mkfile.sh file-to-create.txt 'line to put in file'
+bash-3.2$ cat file-to-create.txt
 line to put in file
 ```
 
 We can also refer to all of the arguments at once by using `$@`, which expands to *all* of the positional parameters, in order. When wrapped in double-quotes, as `"$@"`, each argument becomes a separate word. (Note: the alternative $* is perhaps more common.)
 This is often useful in concert with the built-in command shift, which removes the first positional parameter, such that `$2` becomes `$1`, `$3` becomes `$2`, and so on. 
-
 
 mkfile.sh
 ``` sh
@@ -179,13 +178,114 @@ shift 			# drop the first argument from "$@"
 echo "$@" > "$file" 	# write the remaining arguments to "$file"
 ```
 ``` console
-[oracle@localhost scripts]$ ./mkfile.sh file-to-create.txt line to put in file
-[oracle@localhost scripts]$ cat file-to-create.txt
+bash-3.2$ exit
+exit
+antw@Mac-mini scripts % vim mkfile.sh
+antw@Mac-mini scripts % ./mkfile.sh file-to-create.txt line to put in file
+antw@Mac-mini scripts % cat file-to-create.txt
 line to put in file
 ```
 and all of the arguments, except the filename, will be written to the file.
 
 Note that positional parameters beyond `$9` require the curly braces; should you need to refer to the tenth argument, for example, you must write `${10}`.
+
+### Exit status
+When a process completes, it returns a small non-negative integer value, called its exit status or its return status, to the operating system.  By convention, it returns zero if it completed successfully, and a positive number if it failed with an error. 
+
+Example: `exit 4` terminates the shell script, returning an exit status of four.
+
+The exit status of a command is (briefly) available as `$?`. 
+
+``` console
+bash-3.2$ cat test.sh
+#!/bin/bash
+rm file,txt
+touch file.txt
+bash-3.2$ echo $?
+0
+bash-3.2$ ls file.txt
+ls: file.txt: No such file or directory
+bash-3.2$ echo $?
+1
+bash-3.2$ ./test.sh
+bash: ./test.sh: Permission denied
+bash-3.2$ echo $?
+126
+```
+`rm file.txt && touch file.txt`
+This is the same as before, except that it won't try to run touch unless rm has succeeded.
+
+`! rm file.txt` is equivalent to `rm file.txt`, except that it will indicate success if `rm` indicates failure, and vice versa.
+
+The exit status of a command is (briefly) available as `$?`. 
+
+For example, the `grep` command (which searches for lines in a file that match a specified pattern) returns `0` if it finds a match, `1` if it finds no matches, and `2` if a genuine error occurs.
+
+### Conditional expressions and if statements
+``` sh
+#!/bin/bash
+
+if [[ -e source.txt ]] ; then
+  cp source.txt destination.txt
+fi
+```
+The above uses two built-in commands:
+* The construction `[[ condition ]]` returns an *exit status* of zero (success) if `condition` is true, and 
+a nonzero exit status (failure) if `condition` is false. In our case, `condition` is` -e source.txt`, which is true if and only if there exists a file named `source.txt`.
+* The construction
+  ```
+  if command1 ; then
+    command2
+  fi
+  ```
+  < first runs `command1`; if that completes successfully (that is, if its exit status is zero), then it goes on to run `command2`.
+
+the above is equivalent to this:
+``` sh
+#!/bin/bash
+
+[[ -e source.txt ]] && cp source.txt destination.txt
+```
+#### `if` statements
+``` sh
+#!/bin/bash
+
+if [[ -e source1.txt ]] ; then
+  echo 'source1.txt exists; copying to destination.txt.'
+  cp source1.txt destination.txt
+elif [[ -e source2.txt ]] ; then
+  echo 'source1.txt does not exist, but source2.txt does.'
+  echo 'Copying source2.txt to destination.txt.'
+  cp source2.txt destination.txt
+else
+  echo 'Neither source1.txt nor source2.txt exists; exiting.'
+  exit 1 # terminate the script with a nonzero exit status (failure)
+fi
+```
+Test expression
+``` sh
+# First build a function that simply returns the code given
+returns() { return $*; }
+# Then use read to prompt user to try it out.
+read -p "Exit code:" exit
+if (returns $exit)
+  then echo "true, $?"
+  else echo "false, $?"
+fi
+```
+equivalent
+``` sh
+# Let's reuse the returns function.
+returns() { return $*; }
+read -p "Exit code:" exit
+
+# if (        and                 ) else            fi
+returns $exit && echo "true, $?" || echo "false, $?"
+
+# The REAL equivalent, false is like `returns 1'
+# Of course you can use the returns $exit instead of false.
+# (returns $exit ||(echo "false, $?"; false)) && echo "true, $?"
+```
 
 ---
 
