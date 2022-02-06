@@ -176,6 +176,7 @@ mkfile.sh
 file="$1" 		# save the first argument as "$file"
 shift 			# drop the first argument from "$@"
 echo "$@" > "$file" 	# write the remaining arguments to "$file"
+# echo "$*" > "$file"   # $@ or $*
 ```
 ``` console
 bash-3.2$ exit
@@ -266,27 +267,30 @@ Test expression
 ``` sh
 # First build a function that simply returns the code given
 returns() { return $*; }
+
 # Then use read to prompt user to try it out.
-read -p "Exit code:" exit
+read -p "Exit code:" exit   # read `help read' if you need more info
+
 if (returns $exit)
   then echo "true, $?"
   else echo "false, $?"
 fi
 ```
-equivalent
+equivalent (changed function name and variable name, added `echo` for my debug)
 ``` sh
 # Let's reuse the returns function.
-returns() { return $*; }
-read -p "Exit code:" exit
+functionReturns() { return $*; }
 
-# if (        and                 ) else            fi
-returns $exit && echo "true, $?" || echo "false, $?"
+read -p "Exit code:" exitStatus
+echo "exitStatus: $exitStatus"
+
+# if (                      and                 ) else            fi
+functionReturns $exitStatus && echo "true, $?" || echo "false, $?"
 
 # The REAL equivalent, false is like `returns 1'
 # Of course you can use the returns $exit instead of false.
 # (returns $exit ||(echo "false, $?"; false)) && echo "true, $?"
 ```
-`returns() { return $*; } ` :point_left: :confused:
 
 #### Conditional expressions
 Most commonly used conditions supported by Bash's [[ … ]] notation
@@ -309,7 +313,7 @@ In the last three types of tests, the value on the left is usually a variable ex
 
 The following script is equivalent to the above `if` statements, but it only prints output if the first argument is `--verbose`:
 
-verbose.sh
+verbose.sh, also myTest on **`{ }`**, **`( (  ) )`** and blank
 ``` sh
 #!/bin/bash
 
@@ -321,17 +325,19 @@ else
 fi
 
 if [[ -e source1.txt ]] ; then
-  if [[ "$verbose_mode" == TRUE ]] ; then
-    echo 'source1.txt exists; copying to destination.txt.'
-  fi
+  {                                                                     ### {
+    if [[ "$verbose_mode" == TRUE ]] ; then
+      echo 'source1.txt exists; copying to destination.txt.'
+    fi 
+  }                                                                     ### }
   cp source1.txt destination.txt
 elif [[ -e source2.txt ]] ; then
-  if [[ "$verbose_mode" == TRUE ]] ; then
-    echo 'source1.txt does not exist, but source2.txt does.'
-    echo 'Copying source2.txt to destination.txt.'
-  fi
+  ( if [[ "$verbose_mode" == TRUE ]] ; then                             ### (
+      ( echo 'source1.txt does not exist, but source2.txt does.'        ### (
+        echo 'Copying source2.txt to destination.txt.' )                ### (
+    fi   )                                                              ### (
   cp source2.txt destination.txt
-else
+else                                                                    ### blank
   if [[ "$verbose_mode" == TRUE ]] ; then
     echo 'Neither source1.txt nor source2.txt exists; exiting.'
   fi
