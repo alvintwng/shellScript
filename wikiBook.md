@@ -304,22 +304,22 @@ Most commonly used conditions supported by Bash's [[ … ]] notation
 * `string1 == string2`
       True if *string1* and *string2* are equal.
 * `string ~= pattern`
-      True if *string* matches *pattern*. :point_left: :confused:
+      True if *string* matches *pattern*.               :point_left: :confused:
 * `string != pattern`
-      True if *string* does not match *pattern*. :point_left: :confused:
+      True if *string* does not match *pattern*.        :point_left: :confused:
 
 In the last three types of tests, the value on the left is usually a variable expansion; for example, `[[ "$var" = 'value' ]]` returns a successful exit status if the variable named `var` contains the value `value`.
 
 
 The following script is equivalent to the above `if` statements, but it only prints output if the first argument is `--verbose`:
 
-verbose.sh, also myTest on **`{ }`**, **`( (  ) )`** and blank
+verbose.sh, also myTest on **`{ }`**, **`( (  ) )`**, **`;`** and blank
 ``` sh
 #!/bin/bash
 
-if [[ "$1" == --verbose ]] ; then
-  verbose_mode=TRUE
-  shift # remove the option from $@
+if [[ "$1" == --verbose ]]
+  then verbose_mode=TRUE                                                ### without ;
+    shift # remove the option from $@
 else
   verbose_mode=FALSE
 fi
@@ -338,8 +338,9 @@ elif [[ -e source2.txt ]] ; then
     fi   )                                                              ### (
   cp source2.txt destination.txt
 else                                                                    ### blank
-  if [[ "$verbose_mode" == TRUE ]] ; then
-    echo 'Neither source1.txt nor source2.txt exists; exiting.'
+  if [[ "$verbose_mode" == TRUE ]]                                      ### without ;
+    then
+      echo 'Neither source1.txt nor source2.txt exists; exiting.'
   fi
   exit 1 # terminate the script with a nonzero exit status (failure)
 fi
@@ -379,6 +380,42 @@ fi
 - A newline is used after `then` and after `else`. ...
 - Regular commands are separated by newlines, never semicolons. This is a general convention, ...
 
+### Loops
+rename them to *.txt.bak
+``` sh
+for file in *.txt ; do
+  mv "$file" "$file.bak"
+done
+```
+
+integers 1 through 20 (using brace expansion):
+``` sh
+for i in {1..20} ; do
+  echo "$i"
+done
+```
+
+the positional parameters "$@":
+``` sh
+for arg in "$@" ; do
+  echo "$arg"
+done
+```
+
+while loop  - mynote: will continue run if wait.txt is available.
+```sh
+while [[ -e wait.txt ]] ; do
+  sleep 3 # "sleep" for three seconds
+done
+```
+
+until loop - the reverse of the above
+``` sh
+until [[ -e proceed.txt ]] ; do
+  sleep 3 # "sleep" for three seconds
+done
+```
+
 ---
 
-https://en.wikibooks.org/wiki/Bash_Shell_Scripting
+https://en.wikibooks.org/wiki/Bash_Shell_Scripting      :point_left: :confused:
