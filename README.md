@@ -58,4 +58,12 @@ Shell Scripting notes
     alias lsal='clear; ls -al'
     ```
 
+*   [wikiBooks](wikiBook.md)
+    ``` sh
+    #!/bin/bash
+    file="$1" 		# save the first argument as "$file"
+    shift 			# drop the first argument from "$@"
+    echo "$@" > "$file" 	# write the remaining arguments to "$file"
+    ```
+
 ---
