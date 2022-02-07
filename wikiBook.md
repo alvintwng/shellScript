@@ -416,6 +416,110 @@ until [[ -e proceed.txt ]] ; do
 done
 ```
 
+### Shell functions
+``` sh
+#!/bin/bash
+# Usage:     get_password VARNAME
+# Asks the user for a password; saves it as $VARNAME.
+# Returns a non-zero exit status if standard input is not a terminal, or if the
+# "read" command returns a non-zero exit status.
+get_password() {
+  if [[ -t 0 ]] ; then
+    read -r -p 'Password:' -s "$1" && echo
+  else
+    return 1
+  fi
+}
+
+get_password PASSWORD && echo "$PASSWORD"
+```
+The function `get_password` doesn't do anything that couldn't be done without a shell function, but the result is much more readable. 
+The function invokes the built-in command `read` with several options that most Bash programmers will not be familiar with. (
+- The `-r` option disables a special meaning for the backslash character; 
+- the `-p` option causes a specified prompt, in this case `Password:`, to be displayed at the head of the line; and
+- the `-s` option prevents the password from being displayed as the user types it in. Since 
+- the `-s` option also prevents the user's newline from being displayed, 
+- the `echo` command supplies a newline.) Additionally, 
+- the function uses the conditional expression `-t 0` to make sure that the script's input is coming from a terminal (a console), .... 
+
+Within a shell function, the positional parameters (`$1`, `$2`, and so on, as well as `$@`, `$*`, and `$#`) refer to the arguments that the function was called with, not the arguments of the script that contains the function. 
+If the latter are needed, then they need to be passed in explicitly to the function, using `"$@"`. 
+
+A function call returns an exit status, just like a script (or almost any command). 
+To explicitly specify an exit status, use the `return` command, which terminates the function call and returns the specified exit status. 
+If no exit status is specified, ... then the function returns the exit status of the last command that was run.
+
+* Incidentally, either `function` or `( )` may be omitted from a function declaration, but at least one must be present.
+ Instead of `function get_password ( )`, many programmers write `get_password()`. 
+* Similarly, the `{ … }` notation is not exactly required, and is not specific to functions; it is simply a notation for grouping a sequence of commands into a single compound command. 
+* The body of a function must be a compound command, such as a `{ … }` block or an `if `statement; `{ … }` is the conventional choice, even when all it contains is a single compound command and so could theoretically be dispensed with.
+
+### Subshells, environment variables, and scope
+#### Subshells
+In Bash, one or more commands can be wrapped in parentheses, causing those commands to be executed in a "subshell".
+``` sh
+#!/bin/bash
+
+foo=bar
+echo "$foo" # prints 'bar'
+
+# subshell:
+(
+  echo "$foo" # prints 'bar' - the subshell inherits its parents' variables
+  baz=bip
+  echo "$baz" # prints 'bip' - the subshell can create its own variables
+  foo=foo
+  echo "$foo" # prints 'foo' - the subshell can modify inherited variables
+)
+
+echo "$baz" # prints nothing (just a newline) - the subshell's new variables are lost
+echo "$foo" # prints 'bar' - the subshell's changes to old variables are lost
+```
+``` console
+      bar
+      bar
+      bip
+      foo
+
+      bar
+```
+A subshell also delimits changes to other aspects of the execution environment; ...
+``` sh
+#!/bin/bash
+
+cd /
+pwd # prints '/'
+
+# subshell:
+(
+  pwd # prints '/' - the subshell inherits the working directory
+  cd home
+  pwd # prints '/home' - the subshell can change the working directory
+) # end of subshell
+
+pwd # prints '/' - the subshell's changes to the working directory are lost
+```
+``` console
+      /
+      /
+      /home
+      /
+      sh-4.2$ pwd
+      /home/oracle/2022Shell
+```
+An `exit` statement within a subshell terminates only that subshell. 
+```sh
+#!/bin/bash
+( exit 0 ) && echo 'subshell succeeded'
+( exit 1 ) || echo 'subshell failed'
+```
+``` console
+      subshell succeeded
+      subshell failed
+```
+#### Environment variables
+
+
 ---
 
 https://en.wikibooks.org/wiki/Bash_Shell_Scripting      :point_left: :confused:
