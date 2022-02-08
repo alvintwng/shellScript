@@ -598,6 +598,113 @@ echo "$foo" # prints 'baz'
 ```
 
 ### Pipelines and command substitution
+#### Pipelines
+
+#### Command substitution
+There is really no reason that the caller should have to save the password in a variable. If get_password simply printed the password to its standard output, then the caller could use command substitution, and use it directly:
+```sh
+#!/bin/bash
+ 
+function get_password ( )
+# Usage:     get_password
+# Asks the user for a password; prints it for capture by calling code.
+# Returns a non-zero exit status if standard input is not a terminal, or if
+# standard output *is* a terminal, or if the "read" command returns a non-zero
+# exit status.
+{
+  if [[ -t 0 ]] && ! [[ -t 1 ]] ; then
+    local PASSWORD
+    read -r -p 'Password:' -s PASSWORD && echo >&2
+    echo "$PASSWORD"
+  else
+    return 1
+  fi
+}
+
+echo `get_password`
+# echo "$(get_password)"
+```
+In addition to the notation `$(…)`, an older notation `` `…` `` (using backquotes) is also supported, and still quite commonly found. The two notations have the same effect, but the syntax of `` `…` `` is more restrictive, and in complex cases it can be trickier to get right.
+
+Command substitution allows nesting; something like `a "$(b "$(c)")"` is allowed. (It runs the command `c`, using its output as an argument to `b`, and using the output of *that* as an argument to `a`.)
+
+### Shell arithmetic
+Arithmetic expressions in Bash are closely modeled on those in C, ...
+#### Arithmetic expansion :+1:
+``` sh
+echo $(( 3 + 4 * (5 - 1) ))
+```
+#### expr (deprecated)
+```sh
+echo `expr 3 + 4 \* \( 5 - 1 \)`
+```
+#### Numeric operators
+`+` (addition), `-` (subtraction),`*` (multiplication), `/` (integer division, described above), `%` (modulo division) and ** ("exponentiation").
+
+In addition to the simple assignment operator `=`, Bash also supports compound operators such as `+=`, `-=`, `*=`, `/=`, and `%=`, which perform an operation followed by an assignment.
+The increment operator `++` increases a variable's value by 1;
+The decrement operator `--` is exactly the same, except that it decreases the variable's value by 1.
+
+
+#### Referring to variables
+``` sh
+i=2+3
+echo $(( 7 * i ))
+```
+#### Assigning to variables
+``` sh
+echo $(( 7 * (i = 2 + 3) ))
+```
+#### Arithmetic expressions as their own commands
+A command can consist entirely of an arithmetic expression, using either of the following syntaxes:
+``` sh
+(( i = 2 + 3 ))
+```
+```sh
+let 'i = 2 + 3'
+```
+Both styles of command return an exit status of zero ("successful" or "true") if the expression evaluates to a non-zero value, and an exit status of one ("failure" or "false") if the expression evaluates to zero. For example, this:
+``` sh
+(( 0 )) || echo zero
+(( 1 )) && echo non-zero
+```
+``` console
+[oracle@localhost ~]$ (( 0 )) || echo zero; (( 1 )) && echo non-zero
+zero
+non-zero
+```
+
+#### The comma operator
+Arithmetic expressions can contain multiple sub-expressions separated by commas `,`. 
+``` sh
+echo $(( i = 2 , j = 2 + i , i * j ))
+```
+sets `$i` to `2`, sets `$j` to `4`, and prints `8`.
+
+The `let` built-in actually supports multiple expressions directly without needing a comma; therefore, the following three commands are equivalent:
+```sh
+(( i = 2 , j = 2 + i , i * j ))
+```
+```sh
+let 'i = 2 , j = 2 + i , i * j'
+```
+```sh
+let 'i = 2' 'j = 2 + i' 'i * j'
+```
+
+#### Comparison, Boolean, and conditional operators
+integer comparison operators `<`, `>`, `<=`, `>=`, `==` (meaning =), and `!=`. Each evaluates to 1 for "true" or 0 for "false".
+
+the Boolean operators 
+`&&`, which evaluates to 0 if either of its operands is zero, and to 1 otherwise; 
+`||`, which evaluates to 1 if either of its operands is nonzero, and to 0 otherwise; and ! ("not"), which evaluates to 1 if its operand is zero, and to 0 otherwise. 
+
+And they support the conditional operator `b ? e1 : e2`. This operator evaluates `e1`, and returns its result, if `b` is nonzero; otherwise, it evaluates `e2` and returns its result.
+
+These operators can be combined in complex ways:
+```sh
+(( i = ( ( a > b && c < d + e || f == g + h ) ? j : k ) ))
+```
 
 
 https://en.wikibooks.org/wiki/Bash_Shell_Scripting      :point_left: :confused:
