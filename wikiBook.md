@@ -263,7 +263,7 @@ else
   exit 1 # terminate the script with a nonzero exit status (failure)
 fi
 ```
-Test expression
+Test expression 🌟
 ``` sh
 # First build a function that simply returns the code given
 returns() { return $*; }
@@ -416,6 +416,12 @@ until [[ -e proceed.txt ]] ; do
 done
 ```
 
+mynote :star:
+``` console
+[oracle@localhost ~]$ alias loop20='for i in {1..20}; do (sleep 1; echo "$i"); done'
+[oracle@localhost ~]$ loop20
+```
+
 ### Shell functions
 ``` sh
 #!/bin/bash
@@ -433,6 +439,7 @@ get_password() {
 
 get_password PASSWORD && echo "$PASSWORD"
 ```
+:point_right:
 The function `get_password` doesn't do anything that couldn't be done without a shell function, but the result is much more readable. 
 The function invokes the built-in command `read` with several options that most Bash programmers will not be familiar with. (
 - The `-r` option disables a special meaning for the backslash character; 
@@ -483,6 +490,7 @@ echo "$foo" # prints 'bar' - the subshell's changes to old variables are lost
 
       bar
 ```
+:point_right:
 A subshell also delimits changes to other aspects of the execution environment; ...
 ``` sh
 #!/bin/bash
@@ -507,7 +515,7 @@ pwd # prints '/' - the subshell's changes to the working directory are lost
       sh-4.2$ pwd
       /home/oracle/2022Shell
 ```
-An `exit` statement within a subshell terminates only that subshell. 
+An `exit` statement within a subshell terminates only that subshell.  :point_left: :confused:
 ```sh
 #!/bin/bash
 ( exit 0 ) && echo 'subshell succeeded'
@@ -518,8 +526,78 @@ An `exit` statement within a subshell terminates only that subshell.
       subshell failed
 ```
 #### Environment variables
+Note that export doesn't just create an environment variable; it actually marks the Bash variable as an exported variable, and later assignments to the Bash variable will affect the environment variable as well.
+``` sh
+#!/bin/bash
+foo=bar
+bash -c 'echo $foo' # prints nothing
+export foo
+bash -c 'echo $foo' # prints 'bar'
+foo=baz
+bash -c 'echo $foo' # prints 'baz'
+
+export foo=bax
+bash -c 'foo=bad' # has no effect
+echo "$foo" # print 'bax'
+```
+* the Bash built-in command `.` ("dot") or source, which runs an external file almost as though it were a shell function. :point_left: :confused:
+  header.sh
+  ``` sh
+  foo=bar
+  function baz ()
+  {
+    echo "$@"
+  }
+  ```
+  ``` sh
+  #!/bin/bash
+  . header.sh
+  baz "$foo"
+  ```
+  will print `'bar'`.
 
 
----
+#### Scope
+``` sh
+#!/bin/bash
+
+foo=bar
+
+function f1 ()
+{
+  echo "$foo"
+}
+
+function f2 ()
+{
+  local foo=baz
+  f1 # prints 'baz'
+}
+
+f2
+```
+... will actually print `baz` rather than `bar`. This is because the original value of `$foo` is hidden until `f2` returns. (In programming language theory, a variable like $foo is said to be "dynamically scoped" rather than "lexically scoped".)
+
+... since `local` is simply an executable command, a function can decide at execution-time whether to localize a given variable, so this script:
+``` sh
+#!/bin/bash
+
+function f ()
+{
+  if [[ "$1" == 'yes' ]] ; then
+    local foo
+  fi
+  foo=baz
+}
+
+foo=bar
+f yes # modifies a localized $foo, so has no effect
+echo "$foo" # prints 'bar'
+f # modifies the non-localized $foo, setting it to 'baz'
+echo "$foo" # prints 'baz'
+```
+
+### Pipelines and command substitution
+
 
 https://en.wikibooks.org/wiki/Bash_Shell_Scripting      :point_left: :confused:
