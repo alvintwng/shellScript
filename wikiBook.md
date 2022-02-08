@@ -705,6 +705,92 @@ These operators can be combined in complex ways:
 ```sh
 (( i = ( ( a > b && c < d + e || f == g + h ) ? j : k ) ))
 ```
+#### Arithmetic for-loops
+Bash also supports another style, modeled on the for-loops of C and related languages, using shell arithmetic:
+```sh
+# print all integers 1 through 20:
+for (( i = 1 ; i <= 20 ; ++i )) ; do
+  echo $i
+done
+```
+This for-loop uses three separate arithmetic expressions ...
+```sh
+# print all integers 1 through 20:
+(( i = 1 ))
+while (( i <= 20 )) ; do
+  echo $i
+  (( ++i ))
+done
+```
+
+#### Bitwise operators
+Just as in C, the bitwise operators are `&` (bitwise "and"), `|` (bitwise "or"), `^` (bitwise "exclusive or"), `~` (bitwise "not"), `<<` (bitwise left-shift), and `>>` (bitwise right-shift), as well as `&=` and `|=` and `^=` (which include assignment, just like `+=`).
+
+#### Integer literals
+... literals may be expressed in any base in the range 2–64, using the notation *base#value*.
+```sh
+echo $(( 12 ))        # use the default of base ten (decimal)
+echo $(( 10#12 ))     # explicitly specify base ten (decimal)
+echo $(( 2#1100 ))    # base two (binary)
+echo $(( 8#14 ))      # base eight (octal)
+echo $(( 16#C ))      # base sixteen (hexadecimal)
+echo $(( 8 + 2#100 )) # eight in base ten (decimal), plus four in base two (binary)
+```
+will print 12 six times.
+
+For bases 11 through 36, the English letters A through Z are used for digit-values 10 through 35. This is not case-sensitive. For bases 37 through 64, however, it is specifically the lowercase English letters that are used for digit-values 10 through 35, with the uppercase letters being used for digit-values 36 through 61, the at-sign @ being used for digit-value 62, and the underscore _ being used for digit-value 63. For example, 64#@A3 denotes 256259 (62 × 642 + 36 × 64 + 3).
+
+There are also two special notations: prefixing a literal with `0` indicates base-eight (octal), and prefixing it with `0x` or `0X` indicates base-sixteen (hexadecimal). For example, `030` is equivalent to `8#30`, and `0x6F` is equivalent to `16#6F`.
+
+#### Integer variables
+A variable may be declared as an integer variable 
+```sh
+declare -i n
+n='2 + 3 > 4'
+```
+is more or less equivalent to this:
+``` sh
+n=$((2 + 3 > 4))
+```
+#### Non-integer arithmetic
+Bash shell arithmetic only supports integer arithmetic. However, external programs can often be used to obtain similar functionality for non-integer values.
+```sh
+echo "$(echo '3.4 + 2.2' | bc)"
+```
+prints 5.6.
+
+... to support non-integers, become something like this:
+```sh
+# print the powers of one-half, from 1 to 1/512:
+i=1
+while [ $( echo "$i > 0.001" | bc ) = 1 ] ; do
+  echo $i
+  i=$( echo "scale = scale($i) + 1 ; $i / 2" | bc )
+done
+```
+
+### External Programs
+Bash, as a shell, is actually a 'glue' language. It helps programs to cooperate with each other, and benefits from it. Always Search The Internet for what you want -- there are lots of command line utilities available.
+
+- Using whiptail
+- Using AWK
+- Using sed
+- Using grep
+- Using man, info and help
+Appending `--long-help`, `--help` or `--usage` to a command-line program may also gives you the usage information. Possible synonyms include `-H` and `-h`.
+
+``` sh
+man --help
+man man
+
+info --help
+man info
+info info
+
+help help
+```
+Pressing `h` in `man` and `info`'s interfaces can also give you some direction.
 
 
+---
 https://en.wikibooks.org/wiki/Bash_Shell_Scripting      :point_left: :confused:
