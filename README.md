@@ -65,5 +65,41 @@ Shell Scripting notes
     shift 			# drop the first argument from "$@"
     echo "$@" > "$file" 	# write the remaining arguments to "$file"
     ```
+    `if` statement
+    ```sh
+    #!/bin/bash
+
+    if [[ -e source.txt ]] ; then
+      cp source.txt destination.txt
+    fi
+    ```
+    ``` sh
+    # First build a function that simply returns the code given
+    returns() { return $*; }
+
+    # Then use read to prompt user to try it out.
+    read -p "Exit code:" exit
+
+    if (returns $exit)
+      then echo "true, $?"
+      else echo "false, $?"
+    fi
+    ```
+  
+    ```sh
+    while [[ -e wait.txt ]] ; do
+      sleep 3 # "sleep" for three seconds
+    done    
+    ```
+    to support non-integers
+    ``` sh
+    # print the powers of one-half, from 1 to 1/512:
+    i=1
+    while [ $( echo "$i > 0.001" | bc ) = 1 ] ; do
+      echo $i
+      i=$( echo "scale = scale($i) + 1 ; $i / 2" | bc )
+    done
+    ```
+
 
 ---
