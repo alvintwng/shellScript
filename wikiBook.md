@@ -195,7 +195,7 @@ When a process completes, it returns a small non-negative integer value, called 
 
 Example: `exit 4` terminates the shell script, returning an exit status of four.
 
-The exit status of a command is (briefly) available as `$?`. 
+:star: :point_right: The exit status of a command is (briefly) available as `$?`. 
 
 ``` console
 bash-3.2$ cat test.sh
@@ -293,7 +293,7 @@ functionReturns $exitStatus && echo "true, $?" || echo "false, $?"
 ```
 
 #### Conditional expressions
-Most commonly used conditions supported by Bash's [[ … ]] notation
+:star2: :stars: :star: Most commonly used conditions supported by Bash's `[[ … ]]` notation
 
 * `-e file`
       True if *file* exists
@@ -558,6 +558,11 @@ echo "$foo" # print 'bax'
 
 
 #### Scope
+* Bash variables that are localized to a function-call are scoped to the function that contains them, including any functions called by that function.
+  * The `local` built-in command can be used to localize one or more variables to a function-call, using the syntax `local var1 var2` or `local var1=val1 var2=val2`.
+  * They differ from non-localized variables only in that they disappear when their function-call ends. In particular, they still *are* visible to subshells and child function-calls. Furthermore, like non-localized variables, they can be exported into the environment so as to be seen by child processes as well.
+  
+In effect, using `local` to localize a variable to a function-call is like putting the function-call in a subshell, except that it only affects the one variable; other variables can still be left non-"local".
 ``` sh
 #!/bin/bash
 
@@ -576,7 +581,7 @@ function f2 ()
 
 f2
 ```
-... will actually print `baz` rather than `bar`. This is because the original value of `$foo` is hidden until `f2` returns. (In programming language theory, a variable like $foo is said to be "dynamically scoped" rather than "lexically scoped".)
+... will actually print `baz` rather than `bar`. This is because the original value of `$foo` is hidden until `f2` returns. (In programming language theory, a variable like `$foo` is said to be "dynamically scoped" rather than "lexically scoped".)
 
 ... since `local` is simply an executable command, a function can decide at execution-time whether to localize a given variable, so this script:
 ``` sh
@@ -738,9 +743,7 @@ echo $(( 8 + 2#100 )) # eight in base ten (decimal), plus four in base two (bina
 ```
 will print 12 six times.
 
-For bases 11 through 36, the English letters A through Z are used for digit-values 10 through 35. This is not case-sensitive. For bases 37 through 64, however, it is specifically the lowercase English letters that are used for digit-values 10 through 35, with the uppercase letters being used for digit-values 36 through 61, the at-sign @ being used for digit-value 62, and the underscore _ being used for digit-value 63. For example, 64#@A3 denotes 256259 (62 × 642 + 36 × 64 + 3).
-
-There are also two special notations: prefixing a literal with `0` indicates base-eight (octal), and prefixing it with `0x` or `0X` indicates base-sixteen (hexadecimal). For example, `030` is equivalent to `8#30`, and `0x6F` is equivalent to `16#6F`.
+... There are also two special notations: prefixing a literal with `0` indicates base-eight (octal), and prefixing it with `0x` or `0X` indicates base-sixteen (hexadecimal). For example, `030` is equivalent to `8#30`, and `0x6F` is equivalent to `16#6F`.
 
 #### Integer variables
 A variable may be declared as an integer variable 
@@ -748,6 +751,9 @@ A variable may be declared as an integer variable
 declare -i n
 n='2 + 3 > 4'
 ```
+**`declare`** - Declare variables and/or give them attributes.  If no names are  given
+              then  display the values of variables. (from `help declare`)
+
 is more or less equivalent to this:
 ``` sh
 n=$((2 + 3 > 4))
@@ -755,9 +761,15 @@ n=$((2 + 3 > 4))
 #### Non-integer arithmetic
 Bash shell arithmetic only supports integer arithmetic. However, external programs can often be used to obtain similar functionality for non-integer values.
 ```sh
-echo "$(echo '3.4 + 2.2' | bc)"
+echo "$(echo '3.4 + 2.2' | bc)"   # prints 5.6
 ```
-prints 5.6.
+**`bc`** [ -hlwsqv ] [long-options] [ FILE ... ]
+
+*   is a language that supports arbitrary precision numbers with interactive
+       execution of statements.  There are some similarities in the syntax to the C
+       programming  language. ... (from `man bc`)
+*   '`scale` ( expression )'
+The value of the `scale` function is the number of digits after the decimal point in the expression. (from `info bc`)
 
 ... to support non-integers, become something like this:
 ```sh
@@ -767,6 +779,15 @@ while [ $( echo "$i > 0.001" | bc ) = 1 ] ; do
   echo $i
   i=$( echo "scale = scale($i) + 1 ; $i / 2" | bc )
 done
+```
+mynote
+``` console
+[oracle@localhost ~]$ i=0.01; echo "$i > 0.001" | bc
+1
+[oracle@localhost ~]$ i=0.0001; echo "$i > 0.001" | bc
+0
+[oracle@localhost ~]$ (echo "scale = 5; 0.01/2")| bc
+.00500
 ```
 
 ### External Programs
