@@ -1,7 +1,9 @@
 Bash Shell Scripting
 
+[top]: topOfThePage
+
 * [Some introductory examples](#some-introductory-examples)
-  * [testConfig.sh](#testConfig-sh)
+  * testConfig.sh
 * [Simple commands](#simple-commands)
   * Quoting `'``;``"`, Blackslash, Tilde expansion `~`, Brace expansion `{}`, Redirecting output `>``;``>>`,A preview of pipelines 
 * [Variables](#variables)
@@ -845,9 +847,8 @@ Bash, as a shell, is actually a 'glue' language. It helps programs to cooperate 
   - Pressing `h` in `man` and `info`'s interfaces can also give you some direction.
 
 
-
-
-
-
 ---
 https://en.wikibooks.org/wiki/Bash_Shell_Scripting      :point_left: :confused:
+
+
+[:top: Top](#top)
