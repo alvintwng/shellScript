@@ -1,5 +1,23 @@
 Bash Shell Scripting
 
+* [Some introductory examples](#some-introductory-examples)
+  * [testConfig.sh](#testConfig-sh)
+* [Simple commands](#simple-commands)
+  * Quoting `'``;``"`, Blackslash, Tilde expansion `~`, Brace expansion `{}`, Redirecting output `>``;``>>`,A preview of pipelines 
+* [Variables](#variables)
+  * mkfile.sh
+* [positional parameters](#positional-parameters)
+* [Exit status](#exit-status)
+* [Conditional expressions and `if` statements](#conditional-expressions-and-if-statements)
+  * Test expression, Conditional expressions, Combining conditions
+* [Loops](#loops)
+* [Shell functions](#shell-functions)
+* [Subshells, environment variables, and scope](#subshells-environment-variables-and-scope)
+* [Pipelines and command substitution](#pipelines-and-command-substitution)
+* [Shell arithmetic](#shell-arithmetic)
+* [External Programs](#external-programs)
+
+
 ### Some introductory examples
 We can either type this directly at the Bash prompt, or else save this as a file (say, hello_world.sh) 
 and run it by typing bash `hello_world.sh` or `./hello_world.sh` at the Bash prompt. 
@@ -150,7 +168,8 @@ cmd_to_run=echo                   # store "echo" in the variable "cmd_to_run"
 ```
 It is generally a good idea to wrap variable expansions in double-quotes; for example, use `"$var"` rather than `$var`.
 
-### positional parameters  are identified by numbers rather than by names
+### positional parameters
+**are identified by numbers rather than by names**
 
 suppose we want to create a simple script called `mkfile.sh` that takes two arguments — a filename, and a line of text — and creates the specified file with the specified text.
 
@@ -793,24 +812,41 @@ mynote
 ### External Programs
 Bash, as a shell, is actually a 'glue' language. It helps programs to cooperate with each other, and benefits from it. Always Search The Internet for what you want -- there are lots of command line utilities available.
 
-- Using whiptail
-- Using AWK
-- Using sed
-- Using grep
+- Using [whiptail](https://en.wikibooks.org/wiki/Bash_Shell_Scripting/Whiptail)
+  ``` console
+  [oracle@localhost ~]$ whiptail --title "Example Dialog" --infobox "This is an example of an info box." 8 78
+  [oracle@localhost ~]$ TERM=ansi whiptail --title "Example Dialog" --infobox "This is an example of an info box" 8 78
+  ```
+- Using [AWK](https://en.wikibooks.org/wiki/AWK)
+  ``` console
+  awk '{print $2,$1}' filename
+  ```
+- Using [sed](https://en.wikibooks.org/wiki/Sed)  ("stream editor") 
+  ``` console
+  sed s/cat/dog/g in > out
+  ```
+- Using [grep](https://en.wikibooks.org/wiki/Grep)
+  ``` console
+  [oracle@localhost ~]$ ls |grep output
+  debug_output.tx
+  ``
 - Using man, info and help
-Appending `--long-help`, `--help` or `--usage` to a command-line program may also gives you the usage information. Possible synonyms include `-H` and `-h`.
+  - Appending `--long-help`, `--help` or `--usage` to a command-line program may also gives you the usage information. Possible synonyms include `-H` and `-h`.
+  ``` sh
+  man --help
+  man man
 
-``` sh
-man --help
-man man
+  info --help
+  man info
+  info info
 
-info --help
-man info
-info info
+  help help
+  ```
+  - Pressing `h` in `man` and `info`'s interfaces can also give you some direction.
 
-help help
-```
-Pressing `h` in `man` and `info`'s interfaces can also give you some direction.
+
+
+
 
 
 ---
