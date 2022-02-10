@@ -59,25 +59,32 @@ Shell Scripting notes
     ```
 
 *   [wikiBooks](wikiBook.md)
+    positional parameters
     ``` sh
     #!/bin/bash
-    file="$1" 		# save the first argument as "$file"
-    shift 			# drop the first argument from "$@"
-    echo "$@" > "$file" 	# write the remaining arguments to "$file"
+    echo "$2" > "$1"
+    ```
+    ``` console
+    bash-3.2$ vim mkfile.sh
+    bash-3.2$ chmod +x mkfile.sh
+    bash-3.2$ ./mkfile.sh file-to-create.txt 'line to put in file'
+    bash-3.2$ cat file-to-create.txt
+    line to put in file
     ```
     `if` statement
     ```sh
-    #!/bin/bash
-
-    if [[ -e source.txt ]] ; then
-      cp source.txt destination.txt
+    if [[ -e config.txt ]] ; then
+      # if config.txt exists:
+      diff -u config-default.txt config.txt > config-diff.txt # see what's changed
+    else
+      # if config.txt does not exist:
+      cp config-default.txt config.txt # take the default
     fi
     ```
+    function
     ``` sh
-    # First build a function that simply returns the code given
     returns() { return $*; }
 
-    # Then use read to prompt user to try it out.
     read -p "Exit code:" exit
 
     if (returns $exit)
@@ -85,12 +92,29 @@ Shell Scripting notes
       else echo "false, $?"
     fi
     ```
-  
+    `while`
+ 
     ```sh
     while [[ -e wait.txt ]] ; do
       sleep 3 # "sleep" for three seconds
     done    
     ```
+    
+    shell function
+    ```sh
+    #!/bin/bash
+    # Usage:     get_password VARNAME
+    get_password() {
+      if [[ -t 0 ]] ; then
+        read -r -p 'Password:' -s "$1" && echo
+      else
+        return 1
+      fi
+    }
+
+    get_password PASSWORD && echo "$PASSWORD"
+    ```
+    
     to support non-integers
     ``` sh
     # print the powers of one-half, from 1 to 1/512:
