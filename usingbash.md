@@ -177,7 +177,7 @@ bash: now: command not found...
 [oracle@localhost ~]$ now
 10:47
 ```
-**Mac ios**, I created `.bash_profile`
+**Mac ios** (previous version), I created `.bash_profile`
 ``` console
 antw@Mac-mini ~ % pwd
 /Users/antw
@@ -194,6 +194,7 @@ antw@Mac-mini ~ % cat -n .bash_profile
      4	alias rm='rm -i'
 antw@Mac-mini ~ % 
 ```
+:point_right: Since MacOS Catalina `zsh` is the default shell. On this OS add the alias into `~/.zshrc`
 
 ---
 :point_left: :confused:
