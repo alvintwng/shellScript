@@ -52,7 +52,7 @@ Change: 2022-02-11 22:59:08.585222557 -0500
 [oracle@localhost 2022Shell]$ 
 ```
 
-#### Expanding History
+### Expanding History
 :point_right:   :unamused:
 
 Event           | Designator Description
@@ -96,11 +96,11 @@ sh-4.2$ !!:$:p:r:q
 'hello'
 ```
 
-#### Switching Users
+### Switching Users
 A regular user can call upon most shell commands but some are only available to the priviledged root "superuser".
 The superuser can use the **reboot** command to immediately restart the system.
 
-On a typical Linux system, the user created during installation is given to the **sudo** command that allows commands to be executed as if they were the superuser. When **sudo* requests a password it requres the user password - not the password of the root superuser:
+On a typical Linux system, the user created during installation is given to the **sudo** command that allows commands to be executed as if they were the superuser. When **sudo** requests a password it requres the user password - not the password of the root superuser:
 
 ``` console
 sh-3.2$ reboot
@@ -108,6 +108,9 @@ reboot: Operation not permitted
 sh-3.2$ sudo reboot
 Password:
 ```
+#### sudo passwd root
+When the root superuser account is locked by default it can be enbled by providing a password for root 
+with the **passwd** command:
 ``` console
 [oracle@localhost 2022Shell]$ sudo passwd root
 [sudo] password for oracle: 
@@ -116,6 +119,14 @@ New password:
 BAD PASSWORD: The password fails the dictionary check - it is based on a dictionary word
 Retype new password: 
 passwd: all authentication tokens updated successfully.
+```
+#### `su -`
+Now that the root superuser account is enabled you can log in as root using the **`su`** command with its **`-`** dash option.
+When a regular user first logs into the shell the working directory is by default that user's home directory.
+When the superuser logs in with the **`su -`** command the working directory is the `/root` directory.
+
+#### `pwd` `whoami` `exit`
+``` console
 [oracle@localhost 2022Shell]$ pwd
 /home/oracle/2022Shell
 [oracle@localhost 2022Shell]$ whoami
@@ -129,10 +140,60 @@ ABRT has detected 2 problem(s). For more info run: abrt-cli list
 root
 [root@localhost ~]# exit
 logout
-[oracle@localhost 2022Shell]$ 
 ```
+### Creating Aliases
 
+``` console
+sh-3.2$ alias now='date +%H:%M'
+sh-3.2$ now
+23:33
+sh-3.2$ 
+```
+``` console
+[oracle@localhost 2022Shell]$ ls
+0.001                       getPassword2.sh     subshell3.sh
+[oracle@localhost 2022Shell]$ alias ls='ls --color=never'
+[oracle@localhost 2022Shell]$ ls
+0.001			    getPassword2.sh	subshell3.sh
+```
+Aliases created in a Terminal will be lost when exit the session but 
+they can be made permanent by adding them into the **.bashrc** that is hidden file within home directory:
 
+``` console
+[oracle@localhost ~]$ cd ~
+[oracle@localhost ~]$ vi .bashrc
+```
+.bashrc
+``` sh
+#ALIASES SECTION
+alias now='date +%H:%M'
+alias rm='rm -i'
+```
+Reopen the Terminal, or enter a `source .bashrc` command, to have it execute the Bash run commands.
+``` console
+[oracle@localhost ~]$ now
+bash: now: command not found...
+[oracle@localhost ~]$ source .bashrc
+[oracle@localhost ~]$ now
+10:47
+```
+**Mac ios**, I created `.bash_profile`
+``` console
+antw@Mac-mini ~ % pwd
+/Users/antw
+antw@Mac-mini ~ % vi .bash_profile
+antw@Mac-mini ~ % now            
+zsh: command not found: now
+antw@Mac-mini ~ % source .bash_profile
+antw@Mac-mini ~ % now                 
+00:10
+antw@Mac-mini ~ % cat -n .bash_profile
+     1	# 20220213 created this .bash_profile
+     2	
+     3	alias now='date +%H:%M'
+     4	alias rm='rm -i'
+antw@Mac-mini ~ % 
+```
 
 ---
 :point_left: :confused:
