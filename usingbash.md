@@ -103,7 +103,10 @@ The superuser can use the **reboot** command to immediately restart the system.
 On a typical Linux system, the user created during installation is given to the **sudo** command that allows commands to be executed as if they were the superuser. When **sudo* requests a password it requres the user password - not the password of the root superuser:
 
 ``` console
-
+sh-3.2$ reboot
+reboot: Operation not permitted
+sh-3.2$ sudo reboot
+Password:
 ```
 ``` console
 [oracle@localhost 2022Shell]$ sudo passwd root
