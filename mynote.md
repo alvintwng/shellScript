@@ -1,20 +1,18 @@
-# shellScript
+# mynote
 Shell Scripting notes
 
+[top]: topOfThePage
 
 *   [01_Bash.md](01_Bash.md)
-    ```sh
-    bash --version
-    ```
-    ```sh
-    echo $SHELL
-    ```
-    ```sh
-    cat /etc/shells
-    ```
-    ``` sh
-    which bash
-    ```
+
+    `bash --version`
+
+    `echo $SHELL`
+
+    `cat /etc/shells`
+
+    `which bash`
+
      Bourne Shell built-ins:
     
       `:`,`.`,`break`,`cd`,`continue`,`eval`,`exec`,`exit`,`export`,`getopts`, `hash`, `pwd`, `readonly`, `return`, `set`, `shift`,`test`,`[`,`times`,`trap`,`unmask` and `unset`.
@@ -35,7 +33,7 @@ Shell Scripting notes
     ```
 
 
-*   [note.md](note.md)
+*   [introToShell.md](introToShell.md)
 
     A list of fundamental UN*X system commands follows:
     ```
@@ -125,5 +123,27 @@ Shell Scripting notes
     done
     ```
 
+*   [usingBash](usingBash.md)
+
+    [Filling Arrays](usingbash.md#filling-arrays)
+    ```sh
+    #!/bin/bash
+
+    arr=(Alpha Bravo Charlie Delta Echo)
+    unset arr[1]
+
+    echo "Array arr[1]: ${arr[1]}"                  # (blank)
+    echo "Array arr all: ${arr[@]}"                 # Alpha Charlie Delta Echo
+    echo "Array arr length: ${#arr[@]}"             # 4
+    echo "Array arr elements filled: ${!arr[@]}"    # 0 2 3 4
+    ```
+    [Randomizing Numbers](usingbash.md#randomizing-numbers)
+    ``` console
+    sh-3.2$ echo "$(((RANDOM%10)+1))"
+    6
+    sh-3.2$ echo "$(((RANDOM%10)+1))"
+    1
+    ```
 
 ---
+[:top: Top](#top)
