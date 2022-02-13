@@ -5,5 +5,7 @@ Shell Scripting notes and code for my reference:
 
 * [verbose.sh](verbose.sh) - checking existing file, else copy one, with or without generates a lot of output.
 
+* [mysystem.sh](mysystem.sh) - checking info on current connected users.
+
 ---
 [mynote.md](mynote.md)
