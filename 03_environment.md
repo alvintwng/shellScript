@@ -1,4 +1,5 @@
 # The Bash Environment
+The following information from *Bash Guide for Beginners (PDF), Machtelt Garrels, 20081227*.
 ## Shell initialization files
 ### System-wide configuration files
 #### /etc/profile
@@ -263,39 +264,6 @@ Then a new subshell is started, in which the variable exported from the parent i
 
 The variable is changed to hold another name, but the value for this variable in the parent stays the same.
 
-
-### Reserved variables
-
-### Special parameters
-
-### Script recycling with variables
-
-## Quoting characters
-### why?
-### Escape characters
-### Single quotes
-### Double quotes
-### ANSI-C quoting
-### Locales
-
-## 3.4. Shell expansion
-### General
-### Brace expansion
-### Tilde expansion
-### Shell parameter and variable expansion
-### Command substitution
-### Arithmetic expansion
-### Process substitution
-### Word splitting
-### File name expansion
-
-## Aliases
-### What are aliases?
-### Creating and removing aliases
-
-## More Bash options
-### Displaying options
-### Changing options
 
 ---
 Reference: Bash Guide for Beginners (PDF), Machtelt Garrels, 20081227
