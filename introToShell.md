@@ -1,4 +1,4 @@
-# ny note
+# An Introduction To Shell Programming
 
 
 alternate for schell script, **`alias`**
