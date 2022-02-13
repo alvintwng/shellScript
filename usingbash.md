@@ -120,6 +120,7 @@ BAD PASSWORD: The password fails the dictionary check - it is based on a diction
 Retype new password: 
 passwd: all authentication tokens updated successfully.
 ```
+my password was *password*.
 #### `su -`
 Now that the root superuser account is enabled you can log in as root using the **`su`** command with its **`-`** dash option.
 When a regular user first logs into the shell the working directory is by default that user's home directory.
@@ -177,24 +178,94 @@ bash: now: command not found...
 [oracle@localhost ~]$ now
 10:47
 ```
-**Mac ios** (previous version), I created `.bash_profile`
+**Mac ios** Since MacOS Catalina `zsh` is the default shell, I created '.zshrc'.
+Older version maybe `.bash_profile`.
 ``` console
 antw@Mac-mini ~ % pwd
 /Users/antw
-antw@Mac-mini ~ % vi .bash_profile
-antw@Mac-mini ~ % now            
-zsh: command not found: now
-antw@Mac-mini ~ % source .bash_profile
-antw@Mac-mini ~ % now                 
-00:10
-antw@Mac-mini ~ % cat -n .bash_profile
-     1	# 20220213 created this .bash_profile
+antw@Mac-mini ~ % vi .zshrc
+antw@Mac-mini ~ % source .zshrc
+antw@Mac-mini ~ % now
+11:56
+antw@Mac-mini ~ % cat -n .zshrc
+     1	# 20220213 created this .zshrc WAS .bash_profile
      2	
      3	alias now='date +%H:%M'
      4	alias rm='rm -i'
-antw@Mac-mini ~ % 
+antw@Mac-mini ~ %  
 ```
-:point_right: Since MacOS Catalina `zsh` is the default shell. On this OS add the alias into `~/.zshrc`
+
+### Filling Arrays
+
+`arr=('First String' 'Second String' 'Third String')`
+
+`arr=([0]='First String' [1]='Second String' [2]='Third String')`
+```sh
+arr[0]='First String' 
+arr[1]='Second String' 
+arr[2]='Third String')
+```
+`${arr[0]}` to referenced                       ;
+`${arr[@]}` to see a list of all values         ;
+`${#arr[@]}` to find the length of an array     ;
+`${!arr[@]}` to discover which elements store a value,  and
+`unset` to destroy vairable or array variable.
+
+``` sh
+# unset.sh
+#!/bin/bash
+
+arr=(Alpha Bravo Charlie Delta Echo)
+unset arr[1]
+
+echo "Array arr[1]: ${arr[1]}"
+echo "Array arr all: ${arr[@]}"
+echo "Array arr length: ${#arr[@]}"
+echo "Array arr elements filled: ${!arr[@]}"
+```
+``` console
+sh-4.2$ ./unset.sh
+Array arr[1]: 
+Array arr all: Alpha Charlie Delta Echo
+Array arr length: 4
+Array arr elements filled: 0 2 3 4
+```
+
+### Randomizing Numbers
+Bash provides a `RANDOM` vairable that generates pseudo-random numbers in the range **0 - 32767**.
+``` sh
+# random1.sh
+
+num=$(( ( RANDOM % 10 ) + 1 ))
+
+function assess
+{
+	if (( guess == num ))
+	then
+		echo ":) $guess is Correct!"
+		exit
+	elif (( guess < num ))
+	then echo ":( $guess Is Wrong - Try Higher"
+	else echo ":( $guess Is Wong - Try Lower"
+	fi
+}
+
+while read -p 'Guess My Number 1-10: ' guess
+do
+	assess
+done
+```
+
+[lotto.sh](lotto.sh)
+``` console
+sh-4.2$ ./lotto.sh 9 10
+Your Lucky 9 From 10 : 1 3 7 6 2 5 10 9 8 
+sh-4.2$ ./lotto.sh 1 15
+Your Lucky 1 From 15 : 6 
+sh-4.2$ ./lotto.sh
+Your Lucky 6 From 59 : 5 46 14 32 2 37 
+sh-4.2$ 
+```
 
 ---
 :point_left: :confused:
