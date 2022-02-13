@@ -269,21 +269,27 @@ the above is equivalent to this:
 [[ -e source.txt ]] && cp source.txt destination.txt
 ```
 #### `if` statements
+myTest on **`{ }`**, **`( (  ) )`**, **`;`** and blank
 ``` sh
 #!/bin/bash
 
-if [[ -e source1.txt ]] ; then
-  echo 'source1.txt exists; copying to destination.txt.'
+if [[ -e source1.txt ]]                                         ### without ;
+  then echo 'source1.txt exists; copying to destination.txt.'
   cp source1.txt destination.txt
 elif [[ -e source2.txt ]] ; then
-  echo 'source1.txt does not exist, but source2.txt does.'
-  echo 'Copying source2.txt to destination.txt.'
+  {                                                             ### {
+    echo 'source1.txt does not exist, but source2.txt does.'
+    echo 'Copying source2.txt to destination.txt.'
   cp source2.txt destination.txt
+  }
 else
-  echo 'Neither source1.txt nor source2.txt exists; exiting.'
-  exit 1 # terminate the script with a nonzero exit status (failure)
+  ( echo 'Neither source1.txt nor source2.txt exists; exiting.' #### (
+    exit 1 # terminate the script with a nonzero exit status (failure)
+  )
 fi
 ```
+
+
 Test expression 🌟
 ``` sh
 # First build a function that simply returns the code given
@@ -331,41 +337,8 @@ functionReturns $exitStatus && echo "true, $?" || echo "false, $?"
 
 In the last three types of tests, the value on the left is usually a variable expansion; for example, `[[ "$var" = 'value' ]]` returns a successful exit status if the variable named `var` contains the value `value`.
 
+The [verbose.sh](verbose.sh) is equivalent to the above `if` statements, but it only prints output if the first argument is `--verbose`:
 
-The following script is equivalent to the above `if` statements, but it only prints output if the first argument is `--verbose`:
-
-verbose.sh, also myTest on **`{ }`**, **`( (  ) )`**, **`;`** and blank
-``` sh
-#!/bin/bash
-
-if [[ "$1" == --verbose ]]
-  then verbose_mode=TRUE                                                ### without ;
-    shift # remove the option from $@
-else
-  verbose_mode=FALSE
-fi
-
-if [[ -e source1.txt ]] ; then
-  {                                                                     ### {
-    if [[ "$verbose_mode" == TRUE ]] ; then
-      echo 'source1.txt exists; copying to destination.txt.'
-    fi 
-  }                                                                     ### }
-  cp source1.txt destination.txt
-elif [[ -e source2.txt ]] ; then
-  ( if [[ "$verbose_mode" == TRUE ]] ; then                             ### (
-      ( echo 'source1.txt does not exist, but source2.txt does.'        ### (
-        echo 'Copying source2.txt to destination.txt.' )                ### (
-    fi   )                                                              ### (
-  cp source2.txt destination.txt
-else                                                                    ### blank
-  if [[ "$verbose_mode" == TRUE ]]                                      ### without ;
-    then
-      echo 'Neither source1.txt nor source2.txt exists; exiting.'
-  fi
-  exit 1 # terminate the script with a nonzero exit status (failure)
-fi
-```
 "verbose": it generates a lot of output.
 
 ``` console
@@ -562,6 +535,7 @@ bash -c 'foo=bad' # has no effect
 echo "$foo" # print 'bax'
 ```
 * the Bash built-in command `.` ("dot") or source, which runs an external file almost as though it were a shell function. :point_left: :confused:
+
   header.sh
   ``` sh
   foo=bar
@@ -848,7 +822,7 @@ Bash, as a shell, is actually a 'glue' language. It helps programs to cooperate 
 
 
 ---
-https://en.wikibooks.org/wiki/Bash_Shell_Scripting      :point_left: :confused:
+https://en.wikibooks.org/wiki/Bash_Shell_Scripting  
 
 
 [:top: Top](#top)
