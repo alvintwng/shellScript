@@ -19,3 +19,5 @@ printf "\n"
 printf "This is the uptime information:\n"
 uptime
 printf "\n"
+
+# copied from: Bash Guide for Beginners (PDF), Machtelt Garrels, 20081227
