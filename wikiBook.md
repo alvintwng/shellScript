@@ -789,6 +789,8 @@ mynote
 Bash, as a shell, is actually a 'glue' language. It helps programs to cooperate with each other, and benefits from it. Always Search The Internet for what you want -- there are lots of command line utilities available.
 
 - Using [whiptail](https://en.wikibooks.org/wiki/Bash_Shell_Scripting/Whiptail)
+
+  dialog boxes such as: `yes/no`, `menu`, `input`, `message`,  `text`,  `info`, `checklist`, `radiolist`, `gauge`, and `password`.
   ``` console
   [oracle@localhost ~]$ whiptail --title "Example Dialog" --infobox "This is an example of an info box." 8 78
   [oracle@localhost ~]$ TERM=ansi whiptail --title "Example Dialog" --infobox "This is an example of an info box" 8 78
