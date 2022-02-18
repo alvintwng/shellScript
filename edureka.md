@@ -1,4 +1,7 @@
 edureka.md
+
+:point_right: **deprecated method**
+
 ## Linux Shell Scripting
 
 
@@ -196,7 +199,7 @@ antw@Mac-mini temp %
 | == (Equality)     | Compares two numbers, if both are same then return true.| `[$a == $b]` would return false |
 | != (Not Equality) | Compares two numbers, if both are different then return true. | `[ $a != $b ]` would return true |
 
-#### Relational Operators
+#### Relational Operators - **deprecated**
 | Operators | Purpose | Example |
 |---|---|---|
 | -eq | Check if the value of two operands are equal or not; if yes, then the condition becomes true. | `[ $a -eq $b ]` is not true. |
@@ -274,7 +277,7 @@ antw@Mac-mini temp % ./for.sh
 9
 antw@Mac-mini temp % 
 ```
-#### while.sh
+#### while.sh (deprecated method)
 ``` sh
 #!/bin/sh
 
@@ -286,7 +289,7 @@ do
         a=`expr $a + 1`
 done
 ```
-#### until.sh
+#### until.sh (deprecated method)
 ``` sh
 #!/bin/sh
 
@@ -298,7 +301,7 @@ do
         a=`expr $a + 1`
 done
 ```
-#### nested.sh
+#### nested.sh (deprecated method)
 ``` sh
 #!/bin/sh
 
@@ -333,7 +336,7 @@ console:
 [oracle@localhost mytest]$ 
 ```
 Work on Oracle terminal, not on MacOS
-#### infinite.sh
+#### infinite.sh (deprecated method)
 ``` sh
 #!/bin/sh
 
@@ -347,7 +350,7 @@ done
 ```
 ctrl-C to break/stop.
 
-#### break.sh
+#### break.sh (deprecated method)
 ``` sh
 #!/bin/sh
 
@@ -363,7 +366,7 @@ do
         a=`expr $a + 1`
 done
 ```
-#### continue.sh
+#### continue.sh (deprecated method)
 ``` sh
 #!/bin/sh
 
