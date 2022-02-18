@@ -308,7 +308,8 @@ do
         b="$a"
         while [ "$b" -ge 0 ]    # this is loop2
         do
-                echo -n "$b "
+#               echo -n "$b "   # for Oracle terminal      
+                echo "$b \c"    # for MacOS terminal
                 b=`expr $b - 1`
         done
         echo 
